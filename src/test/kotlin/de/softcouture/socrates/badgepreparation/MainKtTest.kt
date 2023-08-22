@@ -40,14 +40,20 @@ class MainKtTest {
         assertEquals("billing", attendeeRecord.name)
     }
 
-    private fun generateTestRecord(badge: String = "badge", nick: String = "nick", personalFirst: String= "personal",
-                                   billingFirst: String = "billing"): AttendeeRecord {
+    private fun generateTestRecord(badge: String = "badge", nick: String = "nick",
+                                   personalFirst: String= "personal", personalLast: String = "personal",
+                                   billingFirst: String = "billing", billingLast: String = "billing",
+                                   swagSize: String = "XXS", swagCut: String = "straight"): AttendeeRecord {
 
         val attendeeData = HashMap<String, String?>()
         attendeeData.put("nickname", nick)
         attendeeData.put("badgename", badge)
         attendeeData.put("billingAddress_firstname", billingFirst)
+        attendeeData.put("billingAddress_lastname", billingLast)
         attendeeData.put("personalAddress_firstname", personalFirst)
+        attendeeData.put("personalAddress_lastname", personalLast)
+        attendeeData.put("swagSize", swagSize)
+        attendeeData.put("swagCut", swagCut)
         attendeeData.put("email", "FF@stoneage.org")
         attendeeData.put("pronouns", "he/him")
         attendeeData.put("social", "")
@@ -123,8 +129,28 @@ class MainKtTest {
 
     @Test
     fun csvColumnHeaders() {
-        val expectedData = listOf("name","pronouns", "email", "arrivalDate", "social_0",
-            "qrFile_0", "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3")
+        val expectedData = listOf("name","pronouns",
+            "email", "arrivalDate", "firstName", "lastName", "shirtSize", "shirtCut",
+            "social_0", "qrFile_0", "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3")
         assertEquals(expectedData, AttendeeRecord.getCsvColumnHeaders())
+    }
+
+    @Test
+    fun electFirstName () {
+        var attendeeData = generateTestRecord(billingFirst = "Fred", personalFirst = "Wilma")
+        assertEquals("Wilma", attendeeData.firstName)
+        attendeeData = generateTestRecord(billingFirst = "", personalFirst = "Wilma")
+        assertEquals("Wilma", attendeeData.firstName)
+        attendeeData = generateTestRecord(billingFirst = "Fred", personalFirst = "")
+        assertEquals("Fred", attendeeData.firstName)
+    }
+    @Test
+    fun electLastName () {
+        var attendeeData = generateTestRecord(billingLast = "Feuerstein", personalLast = "Geröllheimer")
+        assertEquals("Geröllheimer", attendeeData.lastName)
+        attendeeData = generateTestRecord(billingLast = "", personalLast = "Geröllheimer")
+        assertEquals("Geröllheimer", attendeeData.lastName)
+        attendeeData = generateTestRecord(billingLast = "Feuerstein", personalLast = "")
+        assertEquals("Feuerstein", attendeeData.lastName)
     }
 }

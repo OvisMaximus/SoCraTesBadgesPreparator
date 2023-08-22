@@ -46,34 +46,40 @@ private const val BADGENAME = "badgename"
 private const val SOCIAL = "social"
 private const val PRONOUNS = "pronouns"
 private const val PERSONAL_FIRST_NAME = "personalAddress_firstname"
+private const val PERSONAL_LAST_NAME = "personalAddress_lastname"
 private const val BILLING_FIRST_NAME = "billingAddress_firstname"
+private const val BILLING_LAST_NAME = "billingAddress_lastname"
+private const val SWAG_SIZE = "swagSize"
+private const val SWAG_CUT = "swagCut"
 
 class AttendeeRecord(attendeeData: Map<String, String?>) {
 
-    val nickname: String
-    val email: String
-    val arrivalDate: String
-    val personalFirstName: String?
-    val billingFirstName: String?
-    val social: String?
-    val badgename: String?
-    val pronouns: String
+    val nickname: String = attendeeData.get(NICKNAME)!!
+    val email: String = attendeeData.get(EMAIL)!!
+    val arrivalDate: String = attendeeData.get(ARRIVAL_DATE)!!
+    val personalFirstName: String = attendeeData.get(PERSONAL_FIRST_NAME) ?: ""
+    val personalLastName: String = attendeeData.get(PERSONAL_LAST_NAME) ?: ""
+    val billingFirstName: String = attendeeData.get(BILLING_FIRST_NAME) ?: ""
+    val billingLastName: String = attendeeData.get(BILLING_LAST_NAME) ?: ""
+    val social: String = attendeeData.get(SOCIAL) ?: ""
+    val badgename: String  = attendeeData.get(BADGENAME) ?: ""
+    val pronouns: String = attendeeData.get(PRONOUNS) ?: ""
+    val shirtSize: String = attendeeData.get(SWAG_SIZE) ?: ""
+    val shirtCut: String = attendeeData.get(SWAG_CUT) ?: ""
     val name: String
+    val firstName: String
+    val lastName: String
 
     init {
-        nickname = attendeeData.get(NICKNAME)!!
-        email = attendeeData.get(EMAIL)!!
-        arrivalDate = attendeeData.get(ARRIVAL_DATE)!!
-        personalFirstName = attendeeData.get(PERSONAL_FIRST_NAME)
-        billingFirstName = attendeeData.get(BILLING_FIRST_NAME)
-        badgename = attendeeData.get(BADGENAME)
-        social = attendeeData.get(SOCIAL)
-        pronouns = attendeeData.get(PRONOUNS) ?: ""
-        name = asStringOrNull(badgename)
-            ?: asStringOrNull(nickname)
-            ?: asStringOrNull(personalFirstName)
+        firstName = asStringOrNull(personalFirstName)
             ?: asStringOrNull(billingFirstName)
             ?: ""
+        lastName = asStringOrNull(personalLastName)
+            ?: asStringOrNull(billingLastName)
+            ?: ""
+        name = asStringOrNull(badgename)
+            ?: asStringOrNull(nickname)
+            ?: firstName
     }
 
     private fun asStringOrNull(text: String?): String? {
@@ -90,7 +96,7 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
 
     fun getSocialList(): List<Pair<String, String>>{
         val result = ArrayList<Pair<String, String>>()
-        val segments = social?.split(" ") ?: ArrayList<String>()
+        val segments = social.split(" ")
         segments.forEachIndexed { index, element ->
             var cleanElement = removeDelimeter(element.trim())
             cleanElement = truncateLinkedInUrlIfContainsTrailingArguments(cleanElement)
@@ -139,7 +145,8 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
     }
 
     fun getCsvLineData(): List<String> {
-        val result = mutableListOf<String>(name, pronouns, email, arrivalDate)
+        val result = mutableListOf<String>(name, pronouns, email, arrivalDate, firstName, lastName,
+            shirtSize, shirtCut)
         val socialList = getSocialList()
         var lastSocial = -1
         socialList.forEach() { item: Pair<String, String> ->
@@ -156,8 +163,8 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
 
     companion object {
         fun getCsvColumnHeaders(): List<Any?> {
-            return listOf("name","pronouns", "email", "arrivalDate", "social_0", "qrFile_0",
-                "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3")
+            return listOf("name","pronouns", "email", "arrivalDate", "firstName", "lastName", "shirtSize", "shirtCut",
+                "social_0", "qrFile_0", "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3")
         }
     }
 }
