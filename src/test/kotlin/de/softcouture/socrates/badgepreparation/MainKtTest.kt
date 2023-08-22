@@ -18,7 +18,7 @@ class MainKtTest {
     }
 
     private fun generateTestCsvRecord(social: String?): HashMap<String, String?> {
-        var attendeeData = HashMap<String, String?>()
+        val attendeeData = HashMap<String, String?>()
         attendeeData.put("nickname", "Fred")
         attendeeData.put("badgename", "Fred Feuerstein")
         attendeeData.put("email", "FF@stoneage.org")
@@ -43,7 +43,7 @@ class MainKtTest {
     private fun generateTestRecord(badge: String, nick: String, personalFirst: String,
                                    billingFirst: String): AttendeeRecord {
 
-        var attendeeData = HashMap<String, String?>()
+        val attendeeData = HashMap<String, String?>()
         attendeeData.put("nickname", nick)
         attendeeData.put("badgename", badge)
         attendeeData.put("billingAddress_firstname", billingFirst)
@@ -106,6 +106,15 @@ class MainKtTest {
         assertEquals("@slartibartfass", socialList[0].first)
     }
     @Test
+    fun dropTrailingDataAfterLastSlashFromLinkedInUrls(){
+        val attendeeData = generateTestCsvRecord("https://www.linkedin.com/in/slartibartfass/with?some=extra&stuff https://www.linkedin.com/in/slart-i-bart-fass-4211")
+        val testRecord = AttendeeRecord(attendeeData)
+        val socialList = testRecord.getSocialList()
+        assertEquals(2, socialList.size)
+        assertEquals("https://www.linkedin.com/in/slartibartfass/", socialList[0].first)
+        assertEquals("https://www.linkedin.com/in/slart-i-bart-fass-4211", socialList[1].first)
+    }
+    @Test
     fun qrCodeGeneratorUrlBySocialUrl() {
         val url = "https://softcouture.de/"
         val expectedUrl = QR_CODE_GEN_URL + "https%3A%2F%2Fsoftcouture.de%2F"
@@ -115,7 +124,7 @@ class MainKtTest {
     @Test
     fun csvColumnHeaders() {
         val expectedData = listOf("name","pronouns", "email", "arrivalDate", "social_0",
-            "qrFile_0", "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3");
+            "qrFile_0", "social_1", "qrFile_1", "social_2", "qrFile_2", "social_3", "qrFile_3")
         assertEquals(expectedData, AttendeeRecord.getCsvColumnHeaders())
     }
 }

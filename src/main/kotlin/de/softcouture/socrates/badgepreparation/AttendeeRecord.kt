@@ -92,13 +92,26 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
         val result = ArrayList<Pair<String, String>>()
         val segments = social?.split(" ") ?: ArrayList<String>()
         segments.forEachIndexed { index, element ->
-            val cleanElement = removeDelimeter(element.trim())
+            var cleanElement = removeDelimeter(element.trim())
+            cleanElement = truncateLinkedInUrlIfContainsTrailingArguments(cleanElement)
             if(cleanElement.length > 3 && isNotAProviderName(cleanElement)) {
                 result.add(Pair(cleanElement, email + '_' + index + ".png"))
             }
         }
 
         return result
+    }
+
+    private fun truncateLinkedInUrlIfContainsTrailingArguments(urlString: String): String {
+        if( urlString.startsWith("https://www.linkedin.com/in/")
+            || urlString.startsWith("http://www.linkedin.com/in/"))
+        {
+            val indexOfLastSlash = urlString.indexOfLast {'/' == it}
+            val numberOfSlashes = urlString.count { '/' == it }
+            if(numberOfSlashes > 4)
+                return urlString.substring(0, indexOfLastSlash + 1)
+        }
+        return urlString
     }
 
     private fun isNotAProviderName(socialContact: String): Boolean {
