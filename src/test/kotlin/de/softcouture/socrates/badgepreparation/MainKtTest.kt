@@ -30,18 +30,18 @@ class MainKtTest {
 
     @Test
     fun printNameProvidedAsBadgeNickPersonalFirstOrBillingFirst() {
-        var attendeeRecord = generateTestRecord("badge", "nick", "personal", "billing")
+        var attendeeRecord = generateTestRecord()
         assertEquals("badge", attendeeRecord.name)
-        attendeeRecord = generateTestRecord("", "nick", "personal", "billing")
+        attendeeRecord = generateTestRecord("")
         assertEquals("nick", attendeeRecord.name)
-        attendeeRecord = generateTestRecord("", "", "personal", "billing")
+        attendeeRecord = generateTestRecord("", "")
         assertEquals("personal", attendeeRecord.name)
-        attendeeRecord = generateTestRecord("", "", "", "billing")
+        attendeeRecord = generateTestRecord("", "", "")
         assertEquals("billing", attendeeRecord.name)
     }
 
-    private fun generateTestRecord(badge: String, nick: String, personalFirst: String,
-                                   billingFirst: String): AttendeeRecord {
+    private fun generateTestRecord(badge: String = "badge", nick: String = "nick", personalFirst: String= "personal",
+                                   billingFirst: String = "billing"): AttendeeRecord {
 
         val attendeeData = HashMap<String, String?>()
         attendeeData.put("nickname", nick)
