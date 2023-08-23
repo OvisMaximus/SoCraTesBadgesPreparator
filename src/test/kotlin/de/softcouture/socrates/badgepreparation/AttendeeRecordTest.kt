@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class MainKtTest {
+class AttendeeRecordTest {
     @Test
     fun initializeFromCSVRecord() {
         val attendeeData = generateTestCsvRecord("https://www.linkedin.com/in/fred-feuerstein")
@@ -62,7 +62,7 @@ class MainKtTest {
     }
 
     @Test
-    fun splitMultiple() {
+    fun splitMultipleSocialUris() {
         val attendeeData = generateTestCsvRecord("https://eineUrl @UndEinNick")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -71,7 +71,7 @@ class MainKtTest {
     }
 
     @Test
-    fun removeDelimeterFromSocialListElement() {
+    fun removeDelimeterFromSocialUri() {
         val attendeeData = generateTestCsvRecord("https://eineUrl/, @UndEinNick")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -79,7 +79,7 @@ class MainKtTest {
     }
 
     @Test
-    fun qrCodeNamesDependingOnEmail() {
+    fun qrCodeNamesWithEMailAsUniqueIdentifier() {
         val attendeeData = generateTestCsvRecord("https://eineUrl/, @UndEinNick")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -96,7 +96,7 @@ class MainKtTest {
     }
 
     @Test
-    fun dropProviderNameFromSocialLinks(){
+    fun dropProviderDeclarationFromSocialUris(){
         val attendeeData = generateTestCsvRecord("Twitter: @nasebohren")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -104,7 +104,7 @@ class MainKtTest {
         assertEquals("@nasebohren", socialList[0].first)
     }
     @Test
-    fun dropTooShortToBeRealSocialLinks(){
+    fun dropTooShortToBeRealSocialUris(){
         val attendeeData = generateTestCsvRecord("@no @slartibartfass")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -112,7 +112,7 @@ class MainKtTest {
         assertEquals("@slartibartfass", socialList[0].first)
     }
     @Test
-    fun dropTrailingDataAfterLastSlashFromLinkedInUrls(){
+    fun dropTrailingDataAfterLastSlashFromLinkedInUris(){
         val attendeeData = generateTestCsvRecord("https://www.linkedin.com/in/slartibartfass/with?some=extra&stuff https://www.linkedin.com/in/slart-i-bart-fass-4211")
         val testRecord = AttendeeRecord(attendeeData)
         val socialList = testRecord.getSocialList()
@@ -121,7 +121,7 @@ class MainKtTest {
         assertEquals("https://www.linkedin.com/in/slart-i-bart-fass-4211", socialList[1].first)
     }
     @Test
-    fun qrCodeGeneratorUrlBySocialUrl() {
+    fun generateQrCodeGeneratorUrlBySocialUrl() {
         val url = "https://softcouture.de/"
         val expectedUrl = QR_CODE_GEN_URL + "https%3A%2F%2Fsoftcouture.de%2F"
         assertEquals(expectedUrl, createQrCodeUrl(url))
