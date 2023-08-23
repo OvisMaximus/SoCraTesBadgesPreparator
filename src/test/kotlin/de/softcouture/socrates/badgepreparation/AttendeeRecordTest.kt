@@ -159,8 +159,8 @@ class AttendeeRecordTest {
     fun extractNameFromEmail() {
         var attendeeData = generateTestRecord(billingFirst = "", billingLast = "",
             personalFirst = "", personalLast = "", email = "dani.duese@entenhausen.com")
-        assertEquals("dani", attendeeData.firstName)
-        assertEquals("duese", attendeeData.lastName)
+        assertEquals("Dani", attendeeData.firstName)
+        assertEquals("Duese", attendeeData.lastName)
 
     }
 

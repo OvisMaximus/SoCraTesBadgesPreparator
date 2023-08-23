@@ -1,5 +1,8 @@
 package de.softcouture.socrates.badgepreparation
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 val SourceFields = """
         nickname
         badgename
@@ -86,18 +89,29 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
 
     private fun extractFirstNameFromEMailAddress(email: String): String? {
         val (name, nameSeparatorIdx) = getNameFromEmail(email)
-        return if (nameSeparatorIdx > 0) name.substring(0, nameSeparatorIdx) else null
+        if (nameSeparatorIdx <= 0) return null
+        val firstName = name.substring(0, nameSeparatorIdx)
+        return capitalize(firstName)
     }
 
     private fun extractLastNameFromEMailAddress(email: String): String? {
         val (name, nameSeparatorIdx) = getNameFromEmail(email)
-        return if (nameSeparatorIdx > 0) name.substring(nameSeparatorIdx + 1) else null
+        if (nameSeparatorIdx <= 0)  return null
+        val lastName = name.substring(nameSeparatorIdx + 1)
+        return capitalize(lastName)
     }
 
     private fun getNameFromEmail(email: String): Pair<String, Int> {
         val name = email.trim().takeWhile { it != '@' }
         val nameSeparatorIdx = name.lastIndexOf('.')
         return Pair(name, nameSeparatorIdx)
+    }
+
+    private fun capitalize(name: String): String {
+        return name.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+            else it.toString() }
+
     }
 
     private fun asStringOrNull(text: String?): String? {
