@@ -36,11 +36,12 @@ class AttendeeRecordTest {
         assertEquals("nick", attendeeRecord.name)
         attendeeRecord = generateTestRecord("", "")
         assertEquals("personal", attendeeRecord.name)
-        attendeeRecord = generateTestRecord("", "", "")
+        attendeeRecord = generateTestRecord("", "", personalFirst = "")
         assertEquals("billing", attendeeRecord.name)
     }
 
     private fun generateTestRecord(badge: String = "badge", nick: String = "nick",
+                                   email: String = "FF@stoneage.org",
                                    personalFirst: String= "personal", personalLast: String = "personal",
                                    billingFirst: String = "billing", billingLast: String = "billing",
                                    swagSize: String = "XXS", swagCut: String = "straight"): AttendeeRecord {
@@ -54,7 +55,7 @@ class AttendeeRecordTest {
         attendeeData.put("personalAddress_lastname", personalLast)
         attendeeData.put("swagSize", swagSize)
         attendeeData.put("swagCut", swagCut)
-        attendeeData.put("email", "FF@stoneage.org")
+        attendeeData.put("email", email)
         attendeeData.put("pronouns", "he/him")
         attendeeData.put("social", "")
         attendeeData.put("arrivalDate", "2023-08-23")
@@ -153,4 +154,14 @@ class AttendeeRecordTest {
         attendeeData = generateTestRecord(billingLast = "Feuerstein", personalLast = "")
         assertEquals("Feuerstein", attendeeData.lastName)
     }
+
+    @Test
+    fun extractNameFromEmail() {
+        var attendeeData = generateTestRecord(billingFirst = "", billingLast = "",
+            personalFirst = "", personalLast = "", email = "dani.duese@entenhausen.com")
+        assertEquals("dani", attendeeData.firstName)
+        assertEquals("duese", attendeeData.lastName)
+
+    }
+
 }

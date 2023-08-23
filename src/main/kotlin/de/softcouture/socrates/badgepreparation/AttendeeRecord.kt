@@ -73,13 +73,31 @@ class AttendeeRecord(attendeeData: Map<String, String?>) {
     init {
         firstName = asStringOrNull(personalFirstName)
             ?: asStringOrNull(billingFirstName)
+            ?: asStringOrNull(extractFirstNameFromEMailAddress(email))
             ?: ""
         lastName = asStringOrNull(personalLastName)
             ?: asStringOrNull(billingLastName)
+            ?: asStringOrNull(extractLastNameFromEMailAddress(email))
             ?: ""
         name = asStringOrNull(badgename)
             ?: asStringOrNull(nickname)
             ?: firstName
+    }
+
+    private fun extractFirstNameFromEMailAddress(email: String): String? {
+        val (name, nameSeparatorIdx) = getNameFromEmail(email)
+        return if (nameSeparatorIdx > 0) name.substring(0, nameSeparatorIdx) else null
+    }
+
+    private fun extractLastNameFromEMailAddress(email: String): String? {
+        val (name, nameSeparatorIdx) = getNameFromEmail(email)
+        return if (nameSeparatorIdx > 0) name.substring(nameSeparatorIdx + 1) else null
+    }
+
+    private fun getNameFromEmail(email: String): Pair<String, Int> {
+        val name = email.trim().takeWhile { it != '@' }
+        val nameSeparatorIdx = name.lastIndexOf('.')
+        return Pair(name, nameSeparatorIdx)
     }
 
     private fun asStringOrNull(text: String?): String? {
